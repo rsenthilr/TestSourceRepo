@@ -36,9 +36,8 @@ jobs:
       - name: Send Repository Dispatch
         env: 
           GITHUB_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
-          CURRENT_BRANCH_NAME: "${GITHUB_REF##*/}"
         run: |
-          echo "Current branch: $CURRENT_BRANCH_NAME"
+          echo "Current branch: $branch_name"
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
