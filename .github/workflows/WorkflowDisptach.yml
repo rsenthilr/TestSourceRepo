@@ -36,11 +36,12 @@ jobs:
       - name: Send Repository Dispatch
         env: 
           GITHUB_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
+          CURRENT_BRANCH_NAME: "${GITHUB_REF##*/}"
         run: |
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"ref": "dev"}' \
+          -d '{"ref": $CURRENT_BRANCH_NAME}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/actions/workflows/targetrepo.yml/dispatches
 
       # Runs a set of commands using the runners shell
