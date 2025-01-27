@@ -34,7 +34,7 @@ jobs:
             exit 1
           fi
           echo "Event Title: $title"
-          echo "::set-output name=event_title::$title"
+          echo "EVENT_TITLE_DESC=$title" >> $GITHUB_ENV
       
       # Get the current branch name and store in env variable
     - name: Get current branch
@@ -52,5 +52,5 @@ jobs:
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"event_type":"triggered-by-source-repo","client_payload":{"branch":"${{env.CRR_BR_NAME}}"}}' \
+          -d '{"inputs":{"event_title":"${{env.EVENT_TITLE_DESC}}"}}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/dispatches
