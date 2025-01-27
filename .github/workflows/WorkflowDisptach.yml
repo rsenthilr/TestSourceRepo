@@ -24,7 +24,14 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       #- uses: actions/checkout@v4
-
+      
+      # Get the current branch name
+      - name: Get current branch
+        run: |
+          #Extract branch name from GITHUB_REF (e.g. 'refs/heads/<branch-name>')
+          branch_name="${GITHUB_REF##*/}"
+          echo "Current branch: $branch_name"
+          
       # Get the current branch name
       - name: Get current branch
         run: |
