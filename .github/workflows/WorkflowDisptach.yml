@@ -30,17 +30,20 @@ jobs:
         run: |
           #Extract branch name from GITHUB_REF (e.g. 'refs/heads/<branch-name>')
           branch_name="${GITHUB_REF##*/}"
-          echo "BRANCH_NAME = $branch_name"
+          echo "Current branch: $branch_name"
       
       # Runs a single command using the runners shell
       - name: Send Repository Dispatch
         env: 
           GITHUB_TOKEN: ${{ secrets.REPO_DISPATCH_TOKEN }}
         run: |
+          #Extract branch name from GITHUB_REF (e.g. 'refs/heads/<branch-name>')
+          branch_name="${GITHUB_REF##*/}" \
+          echo "Current branch: $branch_name" \
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"ref": \"$BRANCH_NAME\"}' \
+          -d '{"ref": "$branch_name"}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/actions/workflows/targetrepo.yml/dispatches
 
       # Runs a set of commands using the runners shell
