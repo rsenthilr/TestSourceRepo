@@ -43,7 +43,7 @@ jobs:
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"ref": $branch_name}' \
+          -d "{\"ref\": $branch_name}" \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/actions/workflows/targetrepo.yml/dispatches
 
       # Runs a set of commands using the runners shell
