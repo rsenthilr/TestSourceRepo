@@ -22,28 +22,32 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    - name: Check Event Type
+    # Get the Event Name and commit message/title and store in env variable
+    - name: Get Repository Event name
       id: check_event
       run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
             title="${{ github.event.head_commit.message }}"
+            eventName="${{ github.event_name }}"
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             title="${{ github.event.pull_request.title }}"
+            eventName="${{ github.event_name }}"
           else
             echo "This event is not supported."
             exit 1
           fi
+          echo "Event Name: $eventName"
+          echo "EVENT_NAME=$eventName" >> $GITHUB_ENV
           echo "Event Title: $title"
           echo "EVENT_TITLE_DESC=$title" >> $GITHUB_ENV
-      
-      # Get the current branch name and store in env variable
-    - name: Get current branch
+          
+   # Get the Repo Name and store in env variable
+    - name: Get Repository Name
       run: |
-          #Extract branch name from GITHUB_REF (e.g. 'refs/heads/<branch-name>')
-          branch_name="${GITHUB_REF##*/}"
-          echo "CRR_BR_NAME=$branch_name" >> $GITHUB_ENV
-          echo "Current branch: $branch_name"
-      
+          repoName=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          echo "REPOSITORY_NAME=$repoName" >> $GITHUB_ENV
+          echo "Repo Name: $repoName"
+                
       # Send the Push or Pull event of current source repo branch to trigger the workflow of specific branch in remote repository 
     - name: Send Repository Event Workflow Dispatch
       env: 
@@ -52,5 +56,5 @@ jobs:
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"event_type":"${{env.EVENT_TITLE_DESC}}"}' \
+          -d '{"event_type":"${{env.EVENT_NAME}}-${{env.REPOSITORY_NAME}}-${{env.EVENT_TITLE_DESC}}"}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/dispatches
