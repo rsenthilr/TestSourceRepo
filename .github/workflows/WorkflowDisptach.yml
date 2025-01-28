@@ -50,7 +50,7 @@ jobs:
           echo "REPOSITORY_NAME=$repoName" >> $GITHUB_ENV
           echo "Repo Name: $repoName"
   
-  # Get the current branch name and store in env variable
+  # Get the current branch name and store in env var
     - name: Get current branch and store in env variable
       run: |
           branch_name="${GITHUB_REF##*/}"
