@@ -65,5 +65,5 @@ jobs:
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"event_type":"${{env.EVENT_NAME}}-${{env.REPOSITORY_NAME}}-${{env.CRR_BR_NAME}}-${{env.EVENT_TITLE_DESC}}",client_payload{}}' \
+          -d '{"event_type":"${{env.EVENT_NAME}}-${{env.REPOSITORY_NAME}}-${{env.CRR_BR_NAME}}-${{env.EVENT_TITLE_DESC}}","client_payload":{}}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/dispatches
