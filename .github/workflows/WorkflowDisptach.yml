@@ -23,7 +23,7 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Get the Event Name and commit message/title and store in env variable
-    - name: Get Repository Event name
+    - name: Get Repository Event name and store in env variable
       id: check_event
       run: |
           if [[ "${{ github.event_name }}" == "push" ]]; then
@@ -32,7 +32,8 @@ jobs:
             eventName="$(echo ${orginalEventName:0:1} | tr '[:lower:]' '[:upper:]')${orginalEventName:1}"
           elif [[ "${{ github.event_name }}" == "pull_request" ]]; then
             title="${{ github.event.pull_request.title }}"
-            eventName="${{ github.event_name }}"
+            orginalEventName="${{ github.event_name }}"
+            eventName="$(echo ${orginalEventName:0:1} | tr '[:lower:]' '[:upper:]')${orginalEventName:1}"
           else
             echo "This event is not supported."
             exit 1
@@ -43,12 +44,19 @@ jobs:
           echo "EVENT_TITLE_DESC=$title" >> $GITHUB_ENV
           
    # Get the Repo Name and store in env variable
-    - name: Get Repository Name
+    - name: Get Repository Name and store in env variable
       run: |
           repoName=$(echo "${{ github.repository }}" | cut -d'/' -f2)
           echo "REPOSITORY_NAME=$repoName" >> $GITHUB_ENV
           echo "Repo Name: $repoName"
-                
+  
+  # Get the current branch name and store in env variable
+    - name: Get current branch and store in env variable
+      run: |
+          branch_name="${GITHUB_REF##*/}"
+          echo "CRR_BR_NAME=$branch_name" >> $GITHUB_ENV
+          echo "Current branch: $branch_name"
+          
       # Send the Push or Pull event of current source repo branch to trigger the workflow of specific branch in remote repository 
     - name: Send Repository Event Workflow Dispatch
       env: 
@@ -57,5 +65,5 @@ jobs:
           curl -X POST \
           -H "Authorization: token $GITHUB_TOKEN" \
           -H "Accept: application/vnd.github.v3+json" \
-          -d '{"event_type":"${{env.EVENT_NAME}}-${{env.REPOSITORY_NAME}}-${{env.EVENT_TITLE_DESC}}"}' \
+          -d '{"event_type":"${{env.EVENT_NAME}}-${{env.REPOSITORY_NAME}}-${{env.CRR_BR_NAME}}-${{env.EVENT_TITLE_DESC}}"}' \
           https://api.github.com/repos/rsenthilr/TestTargetRepo/dispatches
