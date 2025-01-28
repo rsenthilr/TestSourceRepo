@@ -6,9 +6,9 @@ name: Source Repository
 on:
   # Triggers the workflow on push or pull request events
   push:
-    branches: [ "dev" ]
+    branches: [ "main","dev" ]
   pull_request:
-    branches: [ "dev" ]
+    branches: [ "main","dev" ]
 
   # Allows you to run this workflow manually from the Actions tab
   #workflow_dispatch:
